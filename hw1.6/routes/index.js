@@ -56,9 +56,11 @@ router.get('/api/books/:id', (req, res) => {
 
 })
 
-router.post('/api/books/', (req, res) => {
+router.post('/api/books/', fileMulter.single('upload-file'), (req, res) => {
     const {book} = stor
-    const {title, description, authors, favorite, fileCover, fileName, fileBook} = req.body
+    const {title, description, authors, favorite, fileCover} = req.body
+    const fileBook = req.file.path
+    const fileName = req.file.filename
     const newBook = new Book(title, description, authors, favorite, fileCover, fileName, fileBook)
     book.push(newBook)
 
@@ -105,21 +107,13 @@ router.delete('/api/books/:id', (req, res) => {
     }
 })
 
-router.post('/api/books/save', fileMulter.single('upload-file'), (req, res) => {
-    if (req.file){
-        const {path} = req.file
-        res.json({path})
-    }
-    res.json()
-})
-
 router.get('/api/books/:id/download', (req, res) => {
     const {book} = stor
     const {id} = req.params
     const idx = book.findIndex(el => el.id === id)
 
     if( idx !== -1) {
-        res.json(__dirname+'public/books/'+book[idx].fileBook)
+        res.download(book[idx].fileBook)
     } else {
         res.status(404)
         res.json('404 | страница не найдена')
