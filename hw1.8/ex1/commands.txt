@@ -1,0 +1,14 @@
+docker pull busybox
+$ docker -i -t --rm busybox ping  netology.ru
+docker rename xenodochial_bartik pinger
+docker ps -a
+docker logs -f -t pinger
+docker start pinger
+docker ps -a
+docker logs -f -t pinger
+1:192
+2:66
+2 запуска 258 запроса
+docker stop pinger
+docker rm pinger
+docker rmi busybox
