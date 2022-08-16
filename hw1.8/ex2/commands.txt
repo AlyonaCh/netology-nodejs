@@ -1,0 +1,4 @@
+docker run node:15.14
+docker run -i -t --rm  --name  mynode --env NAME=Alyona --env SURNAME=Chernyaeva node:15.14
+console.log(`Привет, ${process.env.NAME} ${process.env.SURNAME}!`);
+docker rmi node:15.14

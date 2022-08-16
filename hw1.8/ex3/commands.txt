@@ -1,0 +1,8 @@
+docker run node:15.14
+ docker run -i -t -d --rm  --name first_node -v c:/netology/nodejs/hw1.8/ex3/data:/var/first/data node:15.14
+ docker run -i -t -d --rm  --name second_node -v c:/netology/nodejs/hw1.8/ex3/data:/var/second/data node:15.14
+ $ docker exec first_node touch \var/first/data
+ docker exec second_node ls \var/second/data
+ docker stop first_node
+ docker stop second_node
+docker rmi node:15.14
