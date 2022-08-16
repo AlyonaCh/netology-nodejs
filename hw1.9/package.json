@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "books": "./index.js"
+    "books": "index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "start": "pm2 start index.js",
+    "start": "node index.js",
     "stop": "pm2 stop index.js",
     "restart": "pm2 restart index.js"
   },
