@@ -9,9 +9,10 @@ const client = redis.createClient({url:REDIS_URL})
 })
 
 const app = express();
-app.use('/', async (req, res) => {
+app.use('/:id', async (req, res) => {
+    const { id } = req.params
     try {
-        const cnt = await client.incr()
+        const cnt = await client.incr(id)
         res.json(cnt)
     } catch (e) {
         console.log(e);

@@ -1,15 +1,19 @@
 services:
   storage:
     image: redis
-  counter:
-    build: ./counter
     volumes:
-      - ./counter:/app
+      - redis_date:/data
+  counterr:
+    build: .
+    volumes:
+      - ./:/app
     ports:
-      - "80:3002"
+      - 80:3002
     environment:
       - PORT=3002
       - REDIS_URL=redis://storage
-    depends_on:
+    links:
     - storage
+volumes:
+  redis_date: {}
 
