@@ -5,8 +5,6 @@ services:
       - redis_date:/data
   counterr:
     build: .
-    volumes:
-      - ./:/app
     ports:
       - 80:3002
     environment:
