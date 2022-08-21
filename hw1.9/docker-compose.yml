@@ -3,12 +3,22 @@ services:
     image: redis
     volumes:
       - redis_date:/data
-  counterr:
+  counter:
     build: .
     ports:
-      - 80:3002
+      - 81:3002
     environment:
       - PORT=3002
+      - REDIS_URL=redis://storage
+    links:
+    - storage
+  shop:
+    image: alyonach/counter:test1
+    build: .
+    ports:
+      - 80:3000
+    environment:
+      - PORT=3000
       - REDIS_URL=redis://storage
     links:
     - storage
