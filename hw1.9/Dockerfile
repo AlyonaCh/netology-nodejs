@@ -8,7 +8,7 @@ COPY ./package*.json ./
 
 RUN npm install 
 
-COPY ./src ./
+COPY ./counter/src ./
 
 EXPOSE 3000
 

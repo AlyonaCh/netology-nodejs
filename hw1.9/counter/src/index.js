@@ -21,17 +21,7 @@ app.use('api/books/:id', async (req, res) => {
     }
     
 });
-app.use('/counter/:bookId', async (req, res) => {
-    const { bookId } = req.params;
-    try {
-        const value = await client.get(bookId);
-        res.json({msg:'ghbrt', value });
-    } catch (e) {
-        console.log(e);
-        res.statusCode(500).json({eror:500});
-    }
-    
-});
+
 // app.use('/', indexRouter);
 
 const PORT = 3000;
