@@ -2,6 +2,9 @@ const express = require('express')
 const router = express.Router()
 const { v4: uuid } = require('uuid')
 const fileMulter = require('../middleware/file')
+const http = require("http")
+const request = require("request")
+const COUNTER_URL = process.env.COUNTER_URL || 'counter://localhost';
 
 class Book {
     constructor(title = "", description = "", authors = "", favorite = "", fileCover = "", fileName = "", fileBook="", id = uuid()) {
@@ -60,11 +63,85 @@ router.get('/:id', (req, res) => {
     const {id} = req.params
     const idx = book.findIndex(el => el.id === id)
 
+    console.log(id)
+
     if( idx !== -1) {
-        res.render("book/view", {
-            title: "view",
-            book: book[idx],
-        });
+        
+        url =`${COUNTER_URL}/${id}/incr`
+        console.log(url)
+        // http.get(`${COUNTER_URL}counter`, (res) => {
+        //     const {statusCode} = res
+        //     if (statusCode !== 200){
+        //         console.log(`statusCode: ${statusCode}`)
+        //         return
+        //     }
+        //     res.setEncoding('utf8')
+        //     let rowData = ''
+        //     res.on('data', (chunk) => rowData = chunk)
+        //     res.on('end', () => {
+        //         let parseData = JSON.parse(rowData)
+        //         console.error(parseData);
+        //     })
+        // }).on('error', (err) => {
+        //     console.error(err)
+        // })
+        var promise = new Promise(function(resolve, reject) {
+            console.log(`${COUNTER_URL}counter/${id}/incr`)
+            request.post({url:`${COUNTER_URL}counter/${id}/incr`,method:'POST',
+            json: true,
+            body: { }},(err, res, body) => {
+                if (err) {
+                    reject(new Error(err));
+                    return
+                }
+                console.log(`Status: ${res.statusCode}`);
+                console.log(body);
+                resolve(body.result);
+                return
+                // const {statusCode} = res
+                // if (statusCode !== 200){
+                //     console.log(`statusCode: ${statusCode}`)
+                   
+                // }
+                // res.setEncoding('utf8')
+                // let rowData = ''
+                // res.on('data', (chunk) => rowData = chunk)
+                // res.on('end', () => {
+                //     let parseData = JSON.parse(rowData)
+                //     console.error(parseData);
+                //     resolve(parseData.result);
+                // })
+                // res.on('error', (err) => {
+                //     console.error(err)
+                //     reject(new Error(err));
+                // })
+            })
+            
+        })
+        promise
+            .then(
+                result => {
+                    res.render("book/view", {
+                        title: "view",
+                        book: book[idx],
+                        counter: result
+                    });
+                },
+                error => {
+                    res.render("book/view", {
+                        title: "view",
+                        book: book[idx],
+                        counter: 0
+                    });
+                }
+            );
+
+        // res.render("book/view", {
+        //     title: "view",
+        //     book: book[idx],
+        //     counter: 0
+        // });
+        
     } else {
         res.redirect('/404');
     }

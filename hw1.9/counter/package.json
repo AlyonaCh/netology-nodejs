@@ -1,31 +1,19 @@
 {
-  "name": "hw1.5",
+  "name": "counter",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "bin": {
-    "books": "index.js"
-  },
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "stop": "pm2 stop index.js",
-    "restart": "pm2 restart index.js"
+    "server": "node src/server.js",
+    "dev": "nodemon -L"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ejs": "^3.1.8",
-    "express": "^4.18.1",
-    "fs": "0.0.1-security",
-    "multer": "^1.4.5-lts.1",
-    "os": "^0.1.2",
-    "pm2": "^5.2.0",
-    "redis": "^4.2.0",
-    "uuid": "^8.3.2"
+    "express": "^4.18.2",
+    "redis": "^4.4.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.20"
   }
 }
