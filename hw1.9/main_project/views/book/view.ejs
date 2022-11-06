@@ -10,6 +10,7 @@
                 <h5 class="card-title">Название: <%= book.title %></h5>
                 <p class="card-text">Описание: <%= book.description %></p>
                 <p class="card-text">Авторы: <%= book.authors %></p>
+                <p class="card-text">Число просмотров: <%= counter %></p>
 
                 <div class="text-right">
                     <a class="btn btn-sm btn-primary" href="/api/books/update/<%= book.id %>">
