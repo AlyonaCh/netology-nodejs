@@ -5,19 +5,16 @@ services:
     volumes: 
       - ./counter/data:/data
   counter:
-    image: node:latest
-    volumes: 
-      - ./counter/:/app
+    build: ./
     restart: always
     ports:
       - 80:3002
     environment:
       - PORT=3002
       - REDIS_URL=redis://storage
-    working_dir: /app
     depends_on:
       - storage
-    command: ["npm", "run", "dev"]
+    
   main:
     image: alyonach/counter:new
     volumes: 

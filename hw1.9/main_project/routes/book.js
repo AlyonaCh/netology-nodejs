@@ -66,27 +66,7 @@ router.get('/:id', (req, res) => {
     console.log(id)
 
     if( idx !== -1) {
-        
-        url =`${COUNTER_URL}/${id}/incr`
-        console.log(url)
-        // http.get(`${COUNTER_URL}counter`, (res) => {
-        //     const {statusCode} = res
-        //     if (statusCode !== 200){
-        //         console.log(`statusCode: ${statusCode}`)
-        //         return
-        //     }
-        //     res.setEncoding('utf8')
-        //     let rowData = ''
-        //     res.on('data', (chunk) => rowData = chunk)
-        //     res.on('end', () => {
-        //         let parseData = JSON.parse(rowData)
-        //         console.error(parseData);
-        //     })
-        // }).on('error', (err) => {
-        //     console.error(err)
-        // })
         var promise = new Promise(function(resolve, reject) {
-            console.log(`${COUNTER_URL}counter/${id}/incr`)
             request.post({url:`${COUNTER_URL}counter/${id}/incr`,method:'POST',
             json: true,
             body: { }},(err, res, body) => {
@@ -94,8 +74,6 @@ router.get('/:id', (req, res) => {
                     reject(new Error(err));
                     return
                 }
-                console.log(`Status: ${res.statusCode}`);
-                console.log(body);
                 resolve(body.result);
                 return
                 // const {statusCode} = res
@@ -135,12 +113,6 @@ router.get('/:id', (req, res) => {
                     });
                 }
             );
-
-        // res.render("book/view", {
-        //     title: "view",
-        //     book: book[idx],
-        //     counter: 0
-        // });
         
     } else {
         res.redirect('/404');
