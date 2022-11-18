@@ -5,19 +5,7 @@ const fileMulter = require('../middleware/file')
 const http = require("http")
 const request = require("request")
 const COUNTER_URL = process.env.COUNTER_URL || 'counter://localhost';
-
-class Book {
-    constructor(title = "", description = "", authors = "", favorite = "", fileCover = "", fileName = "", fileBook="", id = uuid()) {
-        this.title = title
-        this.description = description
-        this.authors = authors
-        this.favorite = favorite
-        this.fileCover = fileCover
-        this.fileName = fileName
-        this.fileBook = fileBook
-        this.id = id
-    }
-}
+const Book = require('../models/book')
 
 class User {
     constructor(mail = "", id = uuid()) {
@@ -27,20 +15,23 @@ class User {
 }
 
 const stor = {
-    book: [
-        new Book("1", "1", "1", "1", "1", "1", '1659257285126-2135_Физика')
-    ],
     user: [
         new User('test@mail.ru')
     ],
 };
 
-router.get('/', (req, res) => {
-    const {book} = stor
-    res.render("book/index", {
-        title: "Books",
-        books: book,
-    });
+router.get('/', async (req, res) => {
+    try {
+        const book = await Book.find().select('-__v')
+        res.render("book/index", {
+            title: "Books",
+            books: book,
+        });
+    } catch (e) {
+        console.log(e)
+        res.redirect('/404');
+    }
+
 })
 
 router.get('/create', (req, res) => {
@@ -50,22 +41,22 @@ router.get('/create', (req, res) => {
     });
 })
 
-router.post('/create',  (req, res) => {
-    const {book} = stor
+router.post('/create',  async (req, res) => {
     const {title, description, authors, favorite, fileCover, fileName, fileBook} = req.body
-    const newBook = new Book(title, description, authors, favorite, fileCover, fileName, fileBook)
-    book.push(newBook)
-    res.redirect('/api/books/')
+    const newBook = new Book({title, description, authors, favorite, fileCover, fileName, fileBook})
+    try {
+        await newBook.save()
+        res.redirect('/api/books/')
+    } catch (e) {
+        console.log(e)
+        res.redirect('/404');
+    }
 })
 
-router.get('/:id', (req, res) => {
-    const {book} = stor
+router.get('/:id', async (req, res) => {
     const {id} = req.params
-    const idx = book.findIndex(el => el.id === id)
-
-    console.log(id)
-
-    if( idx !== -1) {
+    try {
+        const book = await Book.findById(id).select('-__v')
         var promise = new Promise(function(resolve, reject) {
             request.post({url:`${COUNTER_URL}counter/${id}/incr`,method:'POST',
             json: true,
@@ -76,23 +67,6 @@ router.get('/:id', (req, res) => {
                 }
                 resolve(body.result);
                 return
-                // const {statusCode} = res
-                // if (statusCode !== 200){
-                //     console.log(`statusCode: ${statusCode}`)
-                   
-                // }
-                // res.setEncoding('utf8')
-                // let rowData = ''
-                // res.on('data', (chunk) => rowData = chunk)
-                // res.on('end', () => {
-                //     let parseData = JSON.parse(rowData)
-                //     console.error(parseData);
-                //     resolve(parseData.result);
-                // })
-                // res.on('error', (err) => {
-                //     console.error(err)
-                //     reject(new Error(err));
-                // })
             })
             
         })
@@ -101,82 +75,69 @@ router.get('/:id', (req, res) => {
                 result => {
                     res.render("book/view", {
                         title: "view",
-                        book: book[idx],
+                        book: book,
                         counter: result
                     });
                 },
                 error => {
                     res.render("book/view", {
                         title: "view",
-                        book: book[idx],
+                        book: book,
                         counter: 0
                     });
                 }
             );
-        
-    } else {
+    } catch (e) {
+        console.log(e)
         res.redirect('/404');
     }
     
 
 })
 
-router.get('/update/:id', (req, res) => {
-    const {book} = stor
+router.get('/update/:id', async (req, res) => {
     const {id} = req.params
-    const idx = book.findIndex(el => el.id === id)
 
-    if (idx === -1) {
+    try {
+        const book = await Book.findById(id).select('-__v')
+        res.render("book/update", {
+            title: "view",
+            book: book,
+        });
+    } catch (e) {
+        console.log(e)
         res.redirect('/404');
-    } 
-
-    res.render("book/update", {
-        title: "view",
-        book: book[idx],
-    });
+    }
 });
 
-router.post('/update/:id', (req, res) => {
-    const {book} = stor
+router.post('/update/:id', async (req, res) => {
     const {title, description, authors, favorite, fileCover, fileName, fileBook} = req.body
     const {id} = req.params
-    const idx = book.findIndex(el => el.id === id)
-
-    if (idx !== -1){
-        book[idx] = {
-            ...book[idx],
-            title,
-            description, 
-            authors,
-            favorite, 
-            fileCover, 
-            fileName,
-            fileBook,
-        }
-
+    
+    try {
+        await Book.findByIdAndUpdate(id, {title, description, authors, favorite, fileCover, fileName, fileBook})
         res.redirect(`/api/books/${id}`);
-    } else {
+    } catch (e) {
+        console.log(e)
         res.redirect('/404');
     }
     
 })
 
-router.post('/delete/:id', (req, res) => {
-    const {book} = stor
+router.post('/delete/:id', async (req, res) => {
     const {id} = req.params
-    const idx = book.findIndex(el => el.id === id)
      
-    if(idx !== -1){
-        book.splice(idx, 1)
+    try {
+        await Book.deleteOne({_id: id})
         res.redirect(`/api/books/`);
-    } else {
+    } catch (e) {
+        console.log(e)
         res.redirect('/404');
     }
 
 })
 
 router.get('/:id/download', (req, res) => {
-    const {book} = stor
     const {id} = req.params
     const idx = book.findIndex(el => el.id === id)
 
