@@ -1,0 +1,14 @@
+<%- include('../site/header', {title: title}) %>
+<%- include('../site/nav') %>
+
+<h1><%= title %></h1>
+
+<div class="row">
+    <div class="col-sm-6">
+        
+        <%- include('form', {book: book}) %>
+
+    </div>
+</div>
+
+<%- include('../site/footer') %>
