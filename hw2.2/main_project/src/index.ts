@@ -1,7 +1,7 @@
-const express = require('express');
-const mongoose = require('mongoose');
+import express from 'express';
+import mongoose from 'mongoose';
 
-const errorMiddleware = require('./middleware/err-404');
+import errorMiddleware from './middleware/err-404';
 
 const PORT = process.env.PORT || 3000;
 // const UrlDB = process.env.URL_DB || 'mongo://localhost:27017/books';

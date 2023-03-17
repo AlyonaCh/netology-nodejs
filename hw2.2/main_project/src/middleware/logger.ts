@@ -1,7 +1,7 @@
-const fs = require('fs')
-const os = require('os')
+import fs from 'fs';
+import os from'os';
 
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
     const now = Date.now()
     const {url , method} = req
     const data = `${now} ${method} ${url}`
