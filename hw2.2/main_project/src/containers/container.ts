@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { Book } from "../interfaces/Book";
-import { BooksRepositor } from "../classes/BooksRepository";
+import { BooksRepository } from "../classes/BooksRepository";
 import { injectable, inject } from "inversify";
 
 container.bind(BooksRepository).toSelf()

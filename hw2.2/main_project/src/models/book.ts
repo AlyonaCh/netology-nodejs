@@ -1,4 +1,5 @@
-const {Schema, model} = require('mongoose');
+import  mongoose, {Document, Schema, model} from 'mongoose';
+import { Book } from "../interfaces/Book";
 
 const bookSchema = new Schema({
     title: {
@@ -31,4 +32,4 @@ const bookSchema = new Schema({
     }
 })
 
-module.exports = model('Book', bookSchema)
+export const BookModel = mongoose.model<Book & Document>('Book', bookSchema)

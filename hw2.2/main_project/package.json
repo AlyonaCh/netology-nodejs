@@ -2,19 +2,19 @@
   "name": "hw1.5",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "bin": {
-    "books": "./index.js"
+    "books": "./dist/index.js"
   },
   "scripts": {
     "eslint": "eslint --cache --ext .js,.jsx,.ts,.tsx src",
     "eslint:dump": "eslint --print-config ./.eslint.json",
     "build": "tsc --project ./tsconfig.json --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "stop": "pm2 stop index.js",
-    "restart": "pm2 restart index.js"
+    "dev": "nodemon dist/index.js",
+    "start": "node dist/index.js",
+    "stop": "pm2 stop dist/index.js",
+    "restart": "pm2 restart dist/index.js"
   },
   "author": "",
   "license": "ISC",

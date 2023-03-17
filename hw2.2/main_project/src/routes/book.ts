@@ -1,16 +1,16 @@
 console.clear();
 import "reflect-metadata";
 import { Container } from "inversify";
-import { IBooksRepository } from "../src/classes/BooksRepository";
-import { BooksRepository } from "../src/classes/BooksRepository.service";
-const express = require('express')
-const router = express.Router()
-const { v4: uuid } = require('uuid')
-const fileMulter = require('../middleware/file')
-const http = require("http")
-const request = require("request")
+import { IBooksRepository } from "../classes/BooksRepository";
+import { BooksRepository } from "../classes/BooksRepository.service";
+import { Router } from 'express';
+const router = Router();
+import { v4: uuid } from 'uuid';
+import fileMulter from '../middleware/file';
+import http from "http";
+import request from "request";
 const COUNTER_URL = process.env.COUNTER_URL || 'counter://localhost';
-const Book = require('../models/book')
+import { BookModel } from '../models/book';
 
 const container = new Container();
 container.bind(BooksRepository).toSelf();
@@ -30,7 +30,7 @@ const stor = {
 
 router.get('/', async (req, res) => {
     try {
-        const book = await Book.find().select('-__v')
+        const book = await BookModel.find().select('-__v')
         res.render("book/index", {
             title: "Books",
             books: book,
@@ -51,7 +51,7 @@ router.get('/create', (req, res) => {
 
 router.post('/create',  async (req, res) => {
     const {title, description, authors, favorite, fileCover, fileName, fileBook} = req.body
-    const newBook = new Book({title, description, authors, favorite, fileCover, fileName, fileBook})
+    const newBook = new BookModel({title, description, authors, favorite, fileCover, fileName, fileBook})
     try {
         await newBook.save()
         res.redirect('/api/books/')
@@ -109,7 +109,7 @@ router.get('/update/:id', async (req, res) => {
     const {id} = req.params
 
     try {
-        const book = await Book.findById(id).select('-__v')
+        const book = await BookModel.findById(id).select('-__v')
         res.render("book/update", {
             title: "view",
             book: book,
@@ -125,7 +125,7 @@ router.post('/update/:id', async (req, res) => {
     const {id} = req.params
     
     try {
-        await Book.findByIdAndUpdate(id, {title, description, authors, favorite, fileCover, fileName, fileBook})
+        await BookModel.findByIdAndUpdate(id, {title, description, authors, favorite, fileCover, fileName, fileBook})
         res.redirect(`/api/books/${id}`);
     } catch (e) {
         console.log(e)
@@ -138,7 +138,7 @@ router.post('/delete/:id', async (req, res) => {
     const {id} = req.params
      
     try {
-        await Book.deleteOne({_id: id})
+        await BookModel.deleteOne({_id: id})
         res.redirect(`/api/books/`);
     } catch (e) {
         console.log(e)
@@ -163,4 +163,4 @@ router.get('/:id/download', (req, res) => {
 
 })
 
-module.exports = router
+export default router
